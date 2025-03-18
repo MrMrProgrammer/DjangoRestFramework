@@ -2,3 +2,4 @@ venv
 **/__pycache__
 **/migrations/00**
 db.Sqlite3
+test.ipynb
