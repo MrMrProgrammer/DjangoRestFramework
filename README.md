@@ -76,3 +76,21 @@ def todos(request: Request):
 ```
 
 ---
+8- با استفاده از `fields` در `serializer` میتوانیم فیلد های ورودی api را مشخص کنیم. برای مثال داریم :
+```python
+class Todoserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = '__all__'
+```
+
+یا
+
+```python
+class Todoserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ['id', 'title']
+```
+
+```
