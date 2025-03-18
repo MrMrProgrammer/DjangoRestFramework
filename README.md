@@ -30,3 +30,22 @@ for todo in todos:
 `todos = list(Todo.objects.order_by('priority').all().values('title', 'is_done')`
 
 ---
+
+3- برای انتخاب Serializer ما 2 گزینه داریم :
+  1) ModelSerializer
+  2) Serializer
+
+در حالت ModelSerializer روی یک مدل خاص اعمال میشود و نمونه های ما را تبدیل به Json و یا لیستی از Json ها میکند.
+
+در حالت Serializer به صورت custom این فرآیند شکل میگیرد (مانند Schemas در Fastapi).
+
+---
+
+هنگام استفاده از Serializer ها باید دو فیلد را به آنها پاس بدهیم.
+  1) instance
+  2) many: True/False
+
+اگر `many=False` باشد، یک Json فرستاده می شود.
+اگر `many=True` باشد لیستی از Json ها فرستاده می شود.
+
+---
