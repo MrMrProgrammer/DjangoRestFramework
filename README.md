@@ -50,14 +50,14 @@ for todo in todos:
 
 ---
 
-5- هنگامی که میخواهم فرآیند De-Serialize را انجام بدهیم، در متد `POST` باید مقدار `data` را به آن پاس بدهیم. در متد `PUT` باید مقدار `instance` و `data` را به آن بدهیم.
+5- هنگامی که میخواهم فرآیند De-Serialize را انجام بدهیم، در متد `POST` باید `data` را به آن پاس بدهیم. در متد `PUT` باید `instance` و `data` را به آن بدهیم.
 
 ---
 6- با استفاده از متد `is_valid()` میتوانیم ورودی api را اعتبارسنجی کنیم. برای مثال داریم:
 
 ```python
 if request.method == 'POST':
-    serializer = Todoserializer(data=request.data)
+    serializer = TodoSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
@@ -78,7 +78,7 @@ def todos(request: Request):
 ---
 8- با استفاده از `fields` در `serializer` میتوانیم فیلد های ورودی api را مشخص کنیم. برای مثال داریم :
 ```python
-class Todoserializer(serializers.ModelSerializer):
+class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
         fields = '__all__'
@@ -87,10 +87,34 @@ class Todoserializer(serializers.ModelSerializer):
 یا
 
 ```python
-class Todoserializer(serializers.ModelSerializer):
+class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
         fields = ['id', 'title']
 ```
 
 ---
+9- برای واکشی یک Object از دیتابیس میتوانیم به روش های زیر عمل کنیم:
+
+  1) `filter()`
+
+  ```python
+  todo: Todo = Todo.objects.filter(pk=1).first()
+  ```
+
+  2) `get_object_or_404()`:
+
+  ```python
+  from django.shortcuts import get_object_or_404
+
+  todo: Todo = get_object_or_404(Todo, pk=todo_id)
+  ```
+
+  3) `get()`:
+
+  ```python
+  try:
+    todo: Todo = Todo.objects.get(pk=todo_id)
+  except Todo.DoesNotExist:
+    return Response(None, status.HTTP_404_NOT_FOUND)
+  ```

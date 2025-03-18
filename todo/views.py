@@ -1,5 +1,3 @@
-from django.shortcuts import get_object_or_404
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -31,8 +29,6 @@ def todos(request: Request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def todo_detail_view(request: Request, todo_id):
-
-    # todo: Todo = get_object_or_404(Todo, pk=todo_id)
 
     try:
         todo: Todo = Todo.objects.get(pk=todo_id)
