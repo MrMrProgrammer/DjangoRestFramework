@@ -41,11 +41,38 @@ for todo in todos:
 
 ---
 
-هنگام استفاده از Serializer ها باید دو فیلد را به آنها پاس بدهیم.
+4- هنگام فرآیند Serializer ها باید دو فیلد زیر را به آنها پاس بدهیم.
   1) instance
   2) many: True/False
 
 اگر `many=False` باشد، یک Json فرستاده می شود.
 اگر `many=True` باشد لیستی از Json ها فرستاده می شود.
+
+---
+
+5- هنگامی که میخواهم فرآیند De-Serialize را انجام بدهیم، در متد `POST` باید مقدار `data` را به آن پاس بدهیم. در متد `PUT` باید مقدار `instance` و `data` را به آن بدهیم.
+
+---
+6- با استفاده از متد `is_valid()` میتوانیم ورودی api را اعتبارسنجی کنیم. برای مثال داریم:
+
+```python
+if request.method == 'POST':
+    serializer = Todoserializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status.HTTP_201_CREATED)
+```
+
+---
+7- در `decorator` به نام `api_view` لیست متد های قابل پردازش برای api را مشخص میکنیم. برای مثال داریم:
+
+```python
+@api_view(['GET', 'POST'])
+def todos(request: Request):
+    if request.method == 'GET':
+      .
+      .
+      .
+```
 
 ---
