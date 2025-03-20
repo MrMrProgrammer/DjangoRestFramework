@@ -243,3 +243,20 @@ D ---> mixins.DestroyModelMixin ---> self.destroy(request, pk)
 ```
 mixins.ListModelMixin ---> self.list(request)
 ```
+
+---
+14- با استفاده از Generic ها عملا نیاز به کد زدن ندارید :)
+
+تمامی عملیات C, R, U, D, List به صورت زیر پیاده سازی می شود:
+
+```python
+class TodosGenericApiView(generics.ListCreateAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+
+class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+```
+
+----
