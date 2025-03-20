@@ -10,4 +10,7 @@ urlpatterns = [
 
     path('mixins/', views.TodosListMixinApiView.as_view()),
     path('mixins/<pk>', views.TodosDetailMixinApiView.as_view()),
+
+    path('generics/', views.TodosGenericApiView.as_view()),
+    path('generics/<pk>', views.TodosDetailGenericApiView.as_view()),
 ]

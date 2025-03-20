@@ -28,7 +28,6 @@ def todos(request: Request):
     else:
         Response(None, status.HTTP_400_BAD_REQUEST)
 
-# ------------------------------------------------------------------------------------------------
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def todo_detail_view(request: Request, todo_id):
@@ -70,7 +69,6 @@ class TodosListApiView(APIView):
         else:
             return Response(None, status.HTTP_400_BAD_REQUEST)
 
-# ------------------------------------------------------------------------------------------------
 
 class TodosDetailApiView(APIView):
 
@@ -111,7 +109,6 @@ class TodosListMixinApiView(mixins.ListModelMixin, mixins.CreateModelMixin, gene
     def post(self, request: Request):
         return self.create(request)
 
-# ------------------------------------------------------------------------------------------------
 
 class TodosDetailMixinApiView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     queryset = Todo.objects.order_by('priority').all()
@@ -125,5 +122,15 @@ class TodosDetailMixinApiView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin
     
     def delete(self, request: Request, pk: int):
         return self.destroy(request, pk)
+
+# ------------------------------------------------------------------------------------------------
+
+class TodosGenericApiView(generics.ListCreateAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+
+class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
 
 # ------------------------------------------------------------------------------------------------
