@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
+from rest_framework import mixins, generics
 
 from .serializers import TodoSerializer
 from .models import Todo
@@ -100,3 +101,29 @@ class TodosDetailApiView(APIView):
 
 # ------------------------------------------------------------------------------------------------
 
+class TodosListMixinApiView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+
+    def get(self, request: Request):
+        return self.list(request)
+    
+    def post(self, request: Request):
+        return self.create(request)
+
+# ------------------------------------------------------------------------------------------------
+
+class TodosDetailMixinApiView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+
+    def get(self, request: Request, pk: int):
+        return self.retrieve(request, pk)
+    
+    def put(self, request: Request, pk: int):
+        return self.update(request, pk)
+    
+    def delete(self, request: Request, pk: int):
+        return self.destroy(request, pk)
+
+# ------------------------------------------------------------------------------------------------
