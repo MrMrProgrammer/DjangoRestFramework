@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
-from rest_framework import mixins, generics
+from rest_framework import mixins, generics, viewsets
 
 from .serializers import TodoSerializer
 from .models import Todo
@@ -133,4 +133,10 @@ class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Todo.objects.order_by('priority').all()
     serializer_class = TodoSerializer
 
+# ------------------------------------------------------------------------------------------------
+
+class TodosViewSetApiView(viewsets.ModelViewSet):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+    
 # ------------------------------------------------------------------------------------------------
