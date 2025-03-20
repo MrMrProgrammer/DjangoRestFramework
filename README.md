@@ -195,3 +195,51 @@ return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 ```python
 path('cbv/', views.TodosListApiView.as_view())
 ```
+
+---
+13- با استفاده از قدرت Mixin ها در CBV و ارث بری چندگانه در پایتون میتوانیم از چندباره نویسی کدها جلوگیری کنیم. برای مثال داریم:
+
+```python
+from rest_framework import mixins, generics
+
+class TodosListMixinApiView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+
+    def get(self, request: Request):
+        return self.list(request)
+    
+    def post(self, request: Request):
+        return self.create(request)
+```
+
+و یا مثالی دیگر:
+
+```python
+class TodosDetailMixinApiView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+
+    def get(self, request: Request, pk: int):
+        return self.retrieve(request, pk)
+    
+    def put(self, request: Request, pk: int):
+        return self.update(request, pk)
+    
+    def delete(self, request: Request, pk: int):
+        return self.destroy(request, pk)
+```
+
+عملیات CRUD را به صورت زیر انجام میدهیم :
+
+```
+C ---> mixins.CreateModelMixin ---> self.create(request)
+R ---> mixins.RetrieveModelMixin ---> self.retrieve(request, pk)
+U ---> mixins.UpdateModelMixin ---> self.update(request, pk)
+D ---> mixins.DestroyModelMixin ---> self.destroy(request, pk)
+```
+
+همچنین برای بازگرداندن لیستی از Object های مور نظر داریم:
+```
+mixins.ListModelMixin ---> self.list(request)
+```
