@@ -260,3 +260,26 @@ class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
 ```
 
 ----
+15- کار با ViewSets :)
+
+```python
+class TodosViewSetApiView(viewsets.ModelViewSet):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+```
+
+برای آدرس دهی در ViewSets ها باید در فایل urls.py به صورت زیر عمل کنیم:
+
+```python
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('', views.TodosViewSetApiView)
+
+urlpatterns = [
+    path('viewsets/', include(router.urls)),
+]
+```
+و تمام :)
+
+---
