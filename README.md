@@ -385,3 +385,37 @@ class TodosGenericApiView(generics.ListCreateAPIView):
 ```
 
 ---
+19- برای پیاده سازی `Token Authentication` باید چند مرحله زیر را دنبال کنیم:
+
+1- اضافه کردن `rest_framework.authtoken` به `INSTALLED_APPS`
+```python
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+    'rest_framework.authtoken',
+]
+```
+
+2- استفاده از `TokenAuthentication` به عنوان `DEFAULT_AUTHENTICATION_CLASSES`
+```python
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"]
+}
+```
+
+3- انجام `migrate` برای ایجاد جدول جهت نگهداری توکن در دیتابیس
+
+4- ایجاد view برای دریافت توکن. برای اینکار میتوانیم از view آماده DRF استفاده کنیم. این view نام کاربری و رمز عبور را دریافت میکند و توکن ایجاد میکند.
+
+```python
+from rest_framework.authtoken.views import obtain_auth_token
+
+urlpatterns = [
+    ...
+    path('auth-token/', obtain_auth_token, name='generate_auth_token')
+]
+```
+به این ترتیب میتوانیم نام کاربری و رمز عبور را به ویو مربوط به `auth-token` ارسال کنیم و یک توکن دریافت کنیم. سپس در هدر درخواست در کلید `Authorization` مقداری مانند `Token c06b08fab2e37e659d2a70d9c9d348f11b363e20` قرار میدهیم.
+
+---
