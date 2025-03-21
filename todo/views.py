@@ -139,8 +139,6 @@ class TodosGenericApiView(generics.ListCreateAPIView):
     queryset = Todo.objects.order_by('priority').all()
     serializer_class = TodoSerializer
     pagination_class = TodosGenericApiViewPagination
-    authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
 
 class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Todo.objects.order_by('priority').all()
