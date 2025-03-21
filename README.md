@@ -323,3 +323,42 @@ user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
 ```
 
 ---
+17- برای ایجاد Pagination به صورت Global برای CBVها میتوانیم در فایل `settings.py` تنظیمات زیر را اعمال کنیم:
+
+```python
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": "10"
+}
+```
+در DRF دو نوع Pagination وجود دارد:
+```
+1- PageNumberPagination
+2- LimitOffsetPagination
+```
+در `PageNumberPagination` با شماره صفحه جدا میشود و در هر صفحه به اندازه `PAGE_SIZE` نمایش داده خواهد شد.
+
+در `LimitOffsetPagination` با دو فیلد `limit` و `offset` محتوای هر صفحه واکشی میشود. `limit` تعداد آیتم های نمایش داده شده در هر صفحه است و `offset` تعداد آیتم هایی است که skeep شده است.
+
+آین تنظیمات به صورت Global بر روی تمام CBV ها اعمال میشود. همچنین میتوانیم یک CBV دلخواه را به صورت دستی با تنظیمات Pagination متفاوتی تنظیم کنیم. برای مثال داریم :
+
+```python
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+
+class TodosGenericApiViewPagination(PageNumberPagination):
+    page_size = 10
+
+class TodosGenericApiView(generics.ListCreateAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+    pagination_class = TodosGenericApiViewPagination
+```
+و همچنین:
+```python
+class TodosViewSetApiView(viewsets.ModelViewSet):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+    pagination_class = LimitOffsetPaginationV
+```
+
+---

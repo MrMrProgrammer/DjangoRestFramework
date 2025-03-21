@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework import mixins, generics, viewsets
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 
 User = get_user_model()
 
@@ -129,9 +130,13 @@ class TodosDetailMixinApiView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin
 
 # ------------------------------------------------------------------------------------------------
 
+class TodosGenericApiViewPagination(PageNumberPagination):
+    page_size = 10
+
 class TodosGenericApiView(generics.ListCreateAPIView):
     queryset = Todo.objects.order_by('priority').all()
     serializer_class = TodoSerializer
+    pagination_class = TodosGenericApiViewPagination
 
 class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Todo.objects.order_by('priority').all()
@@ -142,6 +147,7 @@ class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
 class TodosViewSetApiView(viewsets.ModelViewSet):
     queryset = Todo.objects.order_by('priority').all()
     serializer_class = TodoSerializer
+    pagination_class = LimitOffsetPagination
     
 # ------------------------------------------------------------------------------------------------
 
