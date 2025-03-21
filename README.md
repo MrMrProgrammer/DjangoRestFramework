@@ -283,3 +283,43 @@ urlpatterns = [
 و تمام :)
 
 ---
+16- میخواهیم هنگامی که لیست کاربران را نشان میدهیم، لیست Todo های هر کاربر را نیز نمایش بدهیم.
+برای این کار باید از مفهوم `Nested Serializers` استفاده کنیم. برای این کار داریم:
+
+```python
+# Add user
+
+class Todo(models.Model):
+    title = models.CharField(max_length=300)
+    content = models.TextField()
+    priority = models.IntegerField(default=1)
+    is_done = models.BooleanField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
+```
+
+```python
+# Create User Serializer
+
+class UserSerializer(serializers.ModelSerializer):
+    todos = TodoSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = '__all__'
+```
+
+finally
+
+```python
+class UserGenericApiView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+```
+
+### Important point !
+```python
+# Add related_name
+user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
+```
+
+---
