@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -6,7 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework import mixins, generics, viewsets
 
-from .serializers import TodoSerializer
+User = get_user_model()
+
+from .serializers import TodoSerializer, UserSerializer
 from .models import Todo
 
 # ------------------------------------------------------------------------------------------------
@@ -140,3 +144,7 @@ class TodosViewSetApiView(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
     
 # ------------------------------------------------------------------------------------------------
+
+class UserGenericApiView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
