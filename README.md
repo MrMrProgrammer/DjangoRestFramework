@@ -362,3 +362,26 @@ class TodosViewSetApiView(viewsets.ModelViewSet):
 ```
 
 ---
+18- برای پیاده سازی سیستم `Authentication` در DRF روش های متفاوتی وجود دارد.
+
+یکی از این روش های `Basic Authentication` است. برای پیاده سازی این روش به صورت Global روی تمام CBV ها میتوانیم به صورت زیر عمل کنیم:
+
+```python
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.BasicAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"]
+}
+```
+همچنین روش اعمال آن بر روی یک CBV خاص به صورت زیر است:
+```python
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+class TodosGenericApiView(generics.ListCreateAPIView):
+    queryset = Todo.objects.order_by('priority').all()
+    serializer_class = TodoSerializer
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+```
+
+---

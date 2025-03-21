@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework import mixins, generics, viewsets
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
@@ -137,6 +139,8 @@ class TodosGenericApiView(generics.ListCreateAPIView):
     queryset = Todo.objects.order_by('priority').all()
     serializer_class = TodoSerializer
     pagination_class = TodosGenericApiViewPagination
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class TodosDetailGenericApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Todo.objects.order_by('priority').all()
