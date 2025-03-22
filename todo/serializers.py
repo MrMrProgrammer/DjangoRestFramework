@@ -5,6 +5,17 @@ from .models import Todo
 User = get_user_model()
 
 class TodoSerializer(serializers.ModelSerializer):
+
+    # def validate_priority(self, priority):
+    #     if 10 < priority < 20:
+    #         return priority
+    #     raise serializers.ValidationError('priority is not OK!')
+    
+    def validate(self, attrs):
+        if 10 < attrs['priority'] < 20:
+            return super().validate(attrs)
+        raise serializers.ValidationError('priority is not OK!')
+    
     class Meta:
         model = Todo
         fields = '__all__'
