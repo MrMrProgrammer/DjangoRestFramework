@@ -419,3 +419,42 @@ urlpatterns = [
 به این ترتیب میتوانیم نام کاربری و رمز عبور را به ویو مربوط به `auth-token` ارسال کنیم و یک توکن دریافت کنیم. سپس در هدر درخواست در کلید `Authorization` مقداری مانند `Token c06b08fab2e37e659d2a70d9c9d348f11b363e20` قرار میدهیم.
 
 ---
+20- برای پیاده سازی فرآیند احرازهویت با استفاده از JWT میتوانیم از کتابخانه‌ی `djangorestframework-simplejwt` استفاده کنیم. برای این کار کافیست مراحل زیر را انجام بدهیم.
+
+1- نصب کتابخانه‌ی `djangorestframework-simplejwt`:
+```bash
+pip install djangorestframework-simplejwt
+```
+
+2- استفاده از JWT به عنوان روش احرازهویت:
+```python
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        ...
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+    ...
+}
+```
+
+3- اضافه کردن URL های مربوط به دریافت توکن و رفرش توکن:
+```python
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+urlpatterns = [
+    ...
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    ...
+]
+```
+
+با این تغییرات اگر `username` و `password` را به سمت `api/token/` ارسال کنیم، یک `access` و یک `refresh` دریافت خواهیم کرد.
+
+با استفاده از `access` در هدر درخواست به صورت زیر میتوانیم به دیتای مورد نظر دسترسی داشته باشیم:
+```
+"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5c..."
+```
+
+---
