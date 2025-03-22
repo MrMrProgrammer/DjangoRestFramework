@@ -485,3 +485,72 @@ def validate(self, attrs):
 ```
 
 ---
+23- برای ایجاد داکیومنت swagger میتوانیم از کتابخانه‌ی `drf-spectacular` استفاده کنیم. برای این کار باید مراحل زیر را انجام بدهیم:
+
+1- نصب کتابخانه‌ی `drf-spectacular`:
+```bash
+pip install drf-spectacular
+```
+
+2- اضافه کردن کتابخانه به `INSTALLED_APPS`:
+```python
+INSTALLED_APPS = [
+    ...
+    'drf_spectacular',
+]
+```
+
+3- تغییر `DEFAULT_SCHEMA`:
+```python
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+```
+
+4- تنظیمات `SPECTACULAR`:
+```python
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
+```
+
+5- اضافه کردن URLها:
+```python
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
+urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+]
+```
+
+---
+24- هنگامی که از FBV یا CBVها به صورت پیش فرض استفاده میکنم، این کتابخانه نمیتواند مقادیر ورودی و خروجی API را تشخیص بدهد. برای تنظیم این مقادیر یا اضافه کردن توضیحات باید به صورت زیر عمل کنیم:
+```python
+class TodosListApiView(APIView):
+
+    def get(self, request: Request):
+        todos = Todo.objects.order_by('priority').all()
+        todo_serializer = TodoSerializer(todos, many=True)
+        return Response(todo_serializer.data, status.HTTP_200_OK)
+
+    @extend_schema(
+        request=TodoSerializer,
+        ...
+    )
+    def post(self, request: Request):
+        serializer = TodoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        else:
+            return Response(None, status.HTTP_400_BAD_REQUEST)
+```
+
+---
