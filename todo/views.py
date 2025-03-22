@@ -10,6 +10,7 @@ from rest_framework import mixins, generics, viewsets
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
 
 User = get_user_model()
 
@@ -68,6 +69,9 @@ class TodosListApiView(APIView):
         todo_serializer = TodoSerializer(todos, many=True)
         return Response(todo_serializer.data, status.HTTP_200_OK)
 
+    @extend_schema(
+        request=TodoSerializer,
+    )
     def post(self, request: Request):
         serializer = TodoSerializer(data=request.data)
         if serializer.is_valid():
