@@ -458,3 +458,30 @@ urlpatterns = [
 ```
 
 ---
+21- اگر به فیلدهای `model` مقدار `null` بدهیم، باید `migration` انجام بدهیم ولی اگر `blank` بدهیم، نیازی به `migration` ندارد و تنها رشته خالی ذخیره میکند.
+
+---
+22- اگر بخواهیم روی فیلدهای `serializer` فرآیند `validation` انجام بدهیم به یکی از دو روش زیر میتوانیم این کار را انجام بدهیم:
+
+1- استفاده از توابع `validate_[attr_name]`:
+
+میتوانیم در `serializer` توابعی با نام فیلد موردنظر ایجاد کنیم فرآیند اعتبارسنجی را درون آن پیاده سازی کنیم. 
+```python
+def validate_priority(self, priority):
+    if 10 < priority < 20:
+        return priority
+    raise serializers.ValidationError('priority is not OK!')
+```
+
+2- استفاده از تابع `validate`:
+
+میتوانیم تابع `validate` را ایجاد کنیم و روی فیلدهای دلخواه اعتبار سنجی انجام بدهیم. در این تابع لیست تمامی فیلدها وجود دارد.
+
+```python
+def validate(self, attrs):
+    if 10 < attrs['priority'] < 20:
+        return super().validate(attrs)
+    raise serializers.ValidationError('priority is not OK!')
+```
+
+---
